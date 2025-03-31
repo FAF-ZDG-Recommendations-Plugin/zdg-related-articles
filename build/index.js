@@ -12,13 +12,13 @@ module.exports = window["wp"]["components"];
 
 /***/ }),
 
-/***/ "@wordpress/data":
-/*!******************************!*\
-  !*** external ["wp","data"] ***!
-  \******************************/
+/***/ "@wordpress/core-data":
+/*!**********************************!*\
+  !*** external ["wp","coreData"] ***!
+  \**********************************/
 /***/ ((module) => {
 
-module.exports = window["wp"]["data"];
+module.exports = window["wp"]["coreData"];
 
 /***/ }),
 
@@ -143,8 +143,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_editor__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_wordpress_editor__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @wordpress/components */ "@wordpress/components");
 /* harmony import */ var _wordpress_components__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
-/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @wordpress/core-data */ "@wordpress/core-data");
+/* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
@@ -155,86 +155,128 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const articles = [{
+// Simulated articles data with extra details: score and publishedAt timestamp
+
+const defaultArticles = [{
   id: 1,
-  title: "Articol 1",
-  link: "https://example.com/article1"
+  title: "Cum tehnologia influențează economia locală",
+  link: "https://example.com/article1",
+  score: 75,
+  publishedAt: "2023-10-01T12:00:00Z"
 }, {
   id: 2,
-  title: "Articol 2",
-  link: "https://example.com/article2"
+  title: "Tendințele modei în 2023: Ce să alegeți",
+  link: "https://example.com/article2",
+  score: 82,
+  publishedAt: "2023-10-02T08:45:00Z"
 }, {
   id: 3,
-  title: "Articol 3",
-  link: "https://example.com/article3"
+  title: "Impactul schimbărilor climatice asupra agriculturii",
+  link: "https://example.com/article3",
+  score: 67,
+  publishedAt: "2023-09-28T16:30:00Z"
 }, {
   id: 4,
-  title: "Articol 4",
-  link: "https://example.com/article4"
+  title: "Inovații în domeniul sănătății: Noi soluții medicale",
+  link: "https://example.com/article4",
+  score: 90,
+  publishedAt: "2023-10-03T10:15:00Z"
 }, {
   id: 5,
-  title: "Articol 5",
-  link: "https://example.com/article5"
+  title: "Povești inspiraționale din lumea afacerilor",
+  link: "https://example.com/article5",
+  score: 78,
+  publishedAt: "2023-09-30T14:20:00Z"
 }, {
   id: 6,
-  title: "Articol 6",
-  link: "https://example.com/article6"
+  title: "Previziuni pentru piața imobiliară din 2024",
+  link: "https://example.com/article6",
+  score: 85,
+  publishedAt: "2023-10-04T09:00:00Z"
 }, {
   id: 7,
-  title: "Articol 7",
-  link: "https://example.com/article7"
+  title: "Sfaturi pentru economisirea energiei în gospodărie",
+  link: "https://example.com/article7",
+  score: 72,
+  publishedAt: "2023-09-29T18:10:00Z"
 }, {
   id: 8,
-  title: "Articol 8",
-  link: "https://example.com/article8"
+  title: "Top destinații de vacanță pentru aventurieri",
+  link: "https://example.com/article8",
+  score: 88,
+  publishedAt: "2023-10-05T11:30:00Z"
 }, {
   id: 9,
-  title: "Articol 9",
-  link: "https://example.com/article9"
+  title: "Recenzii: Cele mai bune gadgeturi ale momentului",
+  link: "https://example.com/article9",
+  score: 80,
+  publishedAt: "2023-09-27T13:45:00Z"
 }, {
   id: 10,
-  title: "Articol 10",
-  link: "https://example.com/article10"
+  title: "Bucătăria tradițională: Rețete autentice românești",
+  link: "https://example.com/article10",
+  score: 76,
+  publishedAt: "2023-10-06T15:25:00Z"
 }];
-const SidebarPanel = () => {
-  // preia meta din editor
-  const meta = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useSelect)(select => {
-    return select('core/editor').getEditedPostAttribute('meta') || {};
-  }, []);
-  const selectedArticles = meta.zdg_related_articles || [];
-  const relatedEnabled = meta.zdg_related_enabled || false;
-  const {
-    editPost
-  } = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_3__.useDispatch)('core/editor');
 
-  // local state for simulating API fetch
+// Updated helper to format the published date
+const formatDate = publishedAt => {
+  const date = new Date(publishedAt);
+  return date.toLocaleDateString('ro-RO', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+};
+const SidebarPanel = () => {
+  // Use the new useEntityProp hook instead of useSelect/useDispatch
+  const [meta, setMeta] = (0,_wordpress_core_data__WEBPACK_IMPORTED_MODULE_3__.useEntityProp)('postType', 'post', 'meta');
+
+  // Debug logs
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
+    console.log("Current meta state:", meta);
+  }, [meta]);
+
+  // Parse the selected articles from the string in meta
+  const selectedArticles = (() => {
+    try {
+      return JSON.parse(meta.zdg_related_articles || '[]');
+    } catch (e) {
+      console.error("Error parsing saved articles", e);
+      return [];
+    }
+  })();
+  const relatedEnabled = meta.zdg_related_enabled || false;
+
+  // Local state for article list and fetching state
   const [fetching, setFetching] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
-  const setMeta = newMeta => {
-    editPost({
-      meta: {
-        ...meta,
-        ...newMeta
-      }
-    });
-  };
-  const toggleArticle = id => {
-    const newSelection = selectedArticles.includes(id) ? selectedArticles.filter(articleId => articleId !== id) : [...selectedArticles, id];
-    setMeta({
-      zdg_related_articles: newSelection
-    });
-  };
+  const [articles, setArticles] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(defaultArticles);
+
+  // Update the toggle
   const toggleRelatedEnabled = value => {
     setMeta({
+      ...meta,
       zdg_related_enabled: value
+    });
+  };
+
+  // Update the article selection
+  const toggleArticle = id => {
+    const newSelection = selectedArticles.includes(id) ? selectedArticles.filter(articleId => articleId !== id) : [...selectedArticles, id];
+    console.log("Setting new selection:", newSelection);
+    setMeta({
+      ...meta,
+      zdg_related_articles: JSON.stringify(newSelection)
     });
   };
   const fetchSimilarArticles = () => {
     setFetching(true);
-    // Simulare API call
     console.log("Se obțin articole similare...");
+    // Simulate API call delay and response update
     setTimeout(() => {
+      // In real implementation, update articles via API response.
       setFetching(false);
-      // In viitor, actualizează lista de articole după răspunsul API
+      // ...existing code may update articles state...
     }, 1000);
   };
   return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_1__.PluginDocumentSettingPanel, {
@@ -253,34 +295,28 @@ const SidebarPanel = () => {
       style: {
         marginTop: '20px'
       },
-      children: articles.map(article => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
-        label: article.title,
-        checked: selectedArticles.includes(article.id),
-        onChange: () => toggleArticle(article.id)
-      }, article.id))
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-      isPrimary: true,
-      style: {
-        marginTop: '20px'
-      },
-      onClick: () => console.log("Articole selectate:", selectedArticles),
-      children: "Salveaz\u0103 selec\u021Bia"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
-      style: {
-        marginTop: '20px'
-      },
-      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("h3", {
-        children: "Articole selectate:"
-      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("ul", {
-        children: articles.filter(article => selectedArticles.includes(article.id)).map(article => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("li", {
-          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("a", {
-            href: article.link,
-            target: "_blank",
-            rel: "noopener noreferrer",
+      children: articles.map(article => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+        style: {
+          marginBottom: '10px'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
+          label: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("strong", {
             children: article.title
-          })
-        }, article.id))
-      })]
+          }),
+          checked: selectedArticles.includes(article.id),
+          onChange: () => toggleArticle(article.id)
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+          isSmall: true,
+          onClick: () => window.open(article.link, '_blank'),
+          children: "Deschide"
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          style: {
+            fontSize: '12px',
+            color: '#555'
+          },
+          children: ["Similitudine: ", article.score, " | Publicat: ", formatDate(article.publishedAt)]
+        })]
+      }, article.id))
     })]
   });
 };

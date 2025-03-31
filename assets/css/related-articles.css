@@ -1,0 +1,28 @@
+/* Title link styling: only the title link is black and underlined only on hover */
+.related-posts .list-item__title a,
+.related-posts .list-item__link-inner {
+    color: #000;
+    text-decoration: none !important;
+}
+.related-posts .list-item__title a:hover,
+.related-posts .list-item__link-inner:hover {
+    text-decoration: underline;
+}
+
+/* Category link styling: use ZDG blue and underline only on hover */
+.related-posts .list-item__category a {
+    color: #0158B5 !important;
+    text-decoration: none !important;
+}
+.related-posts .list-item__category a:hover {
+    text-decoration: underline !important;
+}
+
+.related-posts a {
+    color: #000 !important;
+    text-decoration: none;
+}
+
+.related-posts .list-item__title{
+    margin-bottom: 5px !important;
+}

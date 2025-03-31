@@ -8,6 +8,7 @@
 
 defined('ABSPATH') || exit;
 
+// Enqueue editor scripts
 function zdg_enqueue_sidebar_script() {
     wp_enqueue_script(
         'zdg-sidebar',
@@ -19,15 +20,76 @@ function zdg_enqueue_sidebar_script() {
 }
 add_action('enqueue_block_editor_assets', 'zdg_enqueue_sidebar_script');
 
-// Indexarea articolului la publicare
-function zdg_index_article( $new_status, $old_status, $post ) {
-    if ( 'publish' !== $new_status || 'publish' === $old_status ) {
+// Enqueue frontend styles following ZDG theme pattern
+function zdg_enqueue_related_articles_styles() {
+    // Only enqueue on singular post pages
+    if (!is_singular('post')) {
         return;
     }
-    if ( 'post' !== $post->post_type ) {
+    
+    $post_id = get_the_ID();
+    $related_enabled = get_post_meta($post_id, 'zdg_related_enabled', true);
+    
+    // Only proceed if related articles are enabled for this post
+    if (!$related_enabled) {
         return;
     }
-    // Apel API pentru indexare aici
-    error_log( "Indexare articol ID " . $post->ID );
+    
+    // Our plugin's fallback styles only load when necessary
+    wp_enqueue_style(
+        'zdg-related-articles-styles',
+        plugins_url('assets/css/related-articles.css', __FILE__),
+        array(),
+        filemtime(plugin_dir_path(__FILE__) . 'assets/css/related-articles.css')
+    );
+    
+    // Add inline script to fix any styling issues after the theme has loaded
+    wp_add_inline_script('jquery', '
+        jQuery(document).ready(function($) {
+            // Ensure list items have consistent styling
+            $(".zdg-related-articles .list-item").addClass("--featured-small");
+            
+            // Initialize any scripts that the theme might have for list items
+            if (typeof initListItems === "function") {
+                initListItems($(".zdg-related-articles .list-item"));
+            }
+        });
+    ');
 }
-add_action('transition_post_status', 'zdg_index_article', 10, 3);
+add_action('wp_enqueue_scripts', 'zdg_enqueue_related_articles_styles', 999);
+
+// Register meta fields
+function zdg_register_meta() {
+    register_post_meta('post', 'zdg_related_articles', array(
+        'show_in_rest' => array(
+            'schema' => array(
+                'type'  => 'string',
+                'description' => 'Lista de articole similare ca JSON string',
+            ),
+        ),
+        'single'      => true,
+        'type'        => 'string',
+        'default'     => '[]',
+        'auth_callback' => function() { 
+            return current_user_can('edit_posts'); 
+        },
+        // Simplified sanitize callback - just ensure it's a valid string
+        'sanitize_callback' => 'sanitize_text_field',
+    ));
+    
+    register_post_meta('post', 'zdg_related_enabled', array(
+        'show_in_rest'    => true,
+        'single'          => true,
+        'type'            => 'boolean',
+        'default'         => false,
+        'auth_callback'   => function() { return current_user_can('edit_posts'); },
+        'sanitize_callback' => 'rest_sanitize_boolean',
+    ));
+}
+add_action('init', 'zdg_register_meta');
+
+require_once plugin_dir_path(__FILE__) . 'includes/publish-hooks.php';
+
+// Remove display functionalities from this file and include them from a separate file.
+require_once plugin_dir_path(__FILE__) . 'includes/display-functions.php';
+
