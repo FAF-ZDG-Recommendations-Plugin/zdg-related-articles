@@ -13,10 +13,11 @@ function zdg_display_related_articles($content) {
     }
 
     $related_articles_json = get_post_meta($post_id, 'zdg_related_articles', true);
-    $related_articles_ids = json_decode($related_articles_json, true);
-    if (empty($related_articles_ids)) {
+    $articles_data = json_decode($related_articles_json, true);
+    if (empty($articles_data)) {
         return $content;
     }
+    $related_articles_ids = array_column($articles_data, 'ID');
 
     // Updated markup to align with ZDG theme list structure.
     $related_html  = '<div class="related-posts content-element">'; // use theme's related posts classes
@@ -53,40 +54,3 @@ function zdg_display_related_articles($content) {
     return $content . $related_html;
 }
 add_filter('the_content', 'zdg_display_related_articles');
-
-// Fallback simulated function to retrieve article data.
-function zdg_get_article_data($article_id) {
-    $default_articles = [
-        1 => [
-            'title' => 'Cum tehnologia influențează economia locală',
-            'link'  => 'https://example.com/article1',
-            'date'  => '01.10.2023',
-            'image' => 'https://via.placeholder.com/350x200/008000/FFFFFF?text=ZDG'
-        ],
-        2 => [
-            'title' => 'Tendințele modei în 2023: Ce să alegeți',
-            'link'  => 'https://example.com/article2',
-            'date'  => '02.10.2023',
-            'image' => 'https://via.placeholder.com/350x200/008000/FFFFFF?text=ZDG'
-        ],
-        3 => [
-            'title' => 'Impactul schimbărilor climatice asupra agriculturii',
-            'link'  => 'https://example.com/article3',
-            'date'  => '28.09.2023',
-            'image' => 'https://via.placeholder.com/350x200/008000/FFFFFF?text=ZDG'
-        ],
-        4 => [
-            'title' => 'Inovații în domeniul sănătății: Noi soluții medicale',
-            'link'  => 'https://example.com/article4',
-            'date'  => '03.10.2023',
-            'image' => 'https://via.placeholder.com/350x200/008000/FFFFFF?text=ZDG'
-        ],
-        5 => [
-            'title' => 'Povești inspiraționale din lumea afacerilor',
-            'link'  => 'https://example.com/article5',
-            'date'  => '30.09.2023',
-            'image' => 'https://via.placeholder.com/350x200/008000/FFFFFF?text=ZDG'
-        ],
-    ];
-    return isset($default_articles[$article_id]) ? $default_articles[$article_id] : null;
-}

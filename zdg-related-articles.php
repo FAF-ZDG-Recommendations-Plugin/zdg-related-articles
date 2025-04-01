@@ -20,6 +20,16 @@ function zdg_enqueue_sidebar_script() {
 }
 add_action('enqueue_block_editor_assets', 'zdg_enqueue_sidebar_script');
 
+function zdg_enqueue_scripts() {
+    wp_enqueue_script('zdg-related-articles', plugin_dir_url(__FILE__) . 'build/index.js', array('wp-api-fetch', 'wp-element'), '1.0', true);
+
+    wp_localize_script('zdg-related-articles', 'zdgApi', array(
+        'baseUrl' => get_rest_url(),
+        'nonce'   => wp_create_nonce('wp_rest')
+    ));
+}
+add_action('admin_enqueue_scripts', 'zdg_enqueue_scripts');
+
 // Enqueue frontend styles following ZDG theme pattern
 function zdg_enqueue_related_articles_styles() {
     // Only enqueue on singular post pages
@@ -87,6 +97,49 @@ function zdg_register_meta() {
     ));
 }
 add_action('init', 'zdg_register_meta');
+
+// Custom API endpoint to get article by post name
+add_action('rest_api_init', function () {
+    register_rest_route('zdg-related-articles/v1', '/article-by-name', array(
+        'methods' => 'GET',
+        'callback' => 'zdg_get_article_by_post_name',
+        'permission_callback' => function () {
+            return current_user_can('edit_posts');
+        }
+    ));
+});
+
+function zdg_get_article_by_post_name($request) {
+    $post_name = sanitize_text_field($request['post_name']);
+
+    if (empty($post_name)) {
+        return new WP_Error('empty_post_name', 'Post name is required.', array('status' => 400));
+    }
+
+    $args = array(
+        'name' => $post_name,
+        'post_type' => 'post',
+        'posts_per_page' => 1,
+    );
+
+    $posts = get_posts($args);
+
+    if (empty($posts)) {
+        return null; // Article not found
+    }
+
+    $post = $posts[0];
+
+    // Return the article data
+    return array(
+        'ID' => $post->ID,
+        'title' => $post->post_title,
+        'url' => get_permalink($post->ID),
+        'date' => get_the_date('Y-m-d H:i:s', $post->ID),
+        // You might need to fetch the score from your API or calculate it somehow
+        'score' => 0.0,
+    );
+}
 
 require_once plugin_dir_path(__FILE__) . 'includes/publish-hooks.php';
 

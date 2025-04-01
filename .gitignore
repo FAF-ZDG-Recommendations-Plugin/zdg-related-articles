@@ -1,3 +1,4 @@
 node_modules
 package-lock.json
 .github
+webpack.config.jswebpack.config.js

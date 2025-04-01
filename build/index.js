@@ -2,6 +2,83 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./node_modules/@wordpress/icons/build-module/icon/index.js":
+/*!******************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/icon/index.js ***!
+  \******************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
+/* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_0__);
+/**
+ * WordPress dependencies
+ */
+
+
+/** @typedef {{icon: JSX.Element, size?: number} & import('@wordpress/primitives').SVGProps} IconProps */
+
+/**
+ * Return an SVG icon.
+ *
+ * @param {IconProps}                                 props icon is the SVG component to render
+ *                                                          size is a number specifying the icon size in pixels
+ *                                                          Other props will be passed to wrapped SVG component
+ * @param {import('react').ForwardedRef<HTMLElement>} ref   The forwarded ref to the SVG element.
+ *
+ * @return {JSX.Element}  Icon component
+ */
+function Icon({
+  icon,
+  size = 24,
+  ...props
+}, ref) {
+  return (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.cloneElement)(icon, {
+    width: size,
+    height: size,
+    ...props,
+    ref
+  });
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ((0,_wordpress_element__WEBPACK_IMPORTED_MODULE_0__.forwardRef)(Icon));
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ "./node_modules/@wordpress/icons/build-module/library/external.js":
+/*!************************************************************************!*\
+  !*** ./node_modules/@wordpress/icons/build-module/library/external.js ***!
+  \************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @wordpress/primitives */ "@wordpress/primitives");
+/* harmony import */ var _wordpress_primitives__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__);
+/**
+ * WordPress dependencies
+ */
+
+
+const external = /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.SVG, {
+  xmlns: "http://www.w3.org/2000/svg",
+  viewBox: "0 0 24 24",
+  children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_1__.jsx)(_wordpress_primitives__WEBPACK_IMPORTED_MODULE_0__.Path, {
+    d: "M19.5 4.5h-7V6h4.44l-5.97 5.97 1.06 1.06L18 7.06v4.44h1.5v-7Zm-13 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3H17v3a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h3V5.5h-3Z"
+  })
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (external);
+//# sourceMappingURL=external.js.map
+
+/***/ }),
+
 /***/ "@wordpress/components":
 /*!************************************!*\
   !*** external ["wp","components"] ***!
@@ -19,6 +96,16 @@ module.exports = window["wp"]["components"];
 /***/ ((module) => {
 
 module.exports = window["wp"]["coreData"];
+
+/***/ }),
+
+/***/ "@wordpress/data":
+/*!******************************!*\
+  !*** external ["wp","data"] ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["data"];
 
 /***/ }),
 
@@ -49,6 +136,16 @@ module.exports = window["wp"]["element"];
 /***/ ((module) => {
 
 module.exports = window["wp"]["plugins"];
+
+/***/ }),
+
+/***/ "@wordpress/primitives":
+/*!************************************!*\
+  !*** external ["wp","primitives"] ***!
+  \************************************/
+/***/ ((module) => {
+
+module.exports = window["wp"]["primitives"];
 
 /***/ }),
 
@@ -147,79 +244,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _wordpress_core_data__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_wordpress_core_data__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @wordpress/element */ "@wordpress/element");
 /* harmony import */ var _wordpress_element__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_wordpress_element__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
-/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @wordpress/data */ "@wordpress/data");
+/* harmony import */ var _wordpress_data__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(_wordpress_data__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/icon/index.js");
+/* harmony import */ var _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @wordpress/icons */ "./node_modules/@wordpress/icons/build-module/library/external.js");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react/jsx-runtime */ "react/jsx-runtime");
+/* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__);
 
 
 
 
 
 
-// Simulated articles data with extra details: score and publishedAt timestamp
 
-const defaultArticles = [{
-  id: 1,
-  title: "Cum tehnologia influențează economia locală",
-  link: "https://example.com/article1",
-  score: 75,
-  publishedAt: "2023-10-01T12:00:00Z"
-}, {
-  id: 2,
-  title: "Tendințele modei în 2023: Ce să alegeți",
-  link: "https://example.com/article2",
-  score: 82,
-  publishedAt: "2023-10-02T08:45:00Z"
-}, {
-  id: 3,
-  title: "Impactul schimbărilor climatice asupra agriculturii",
-  link: "https://example.com/article3",
-  score: 67,
-  publishedAt: "2023-09-28T16:30:00Z"
-}, {
-  id: 4,
-  title: "Inovații în domeniul sănătății: Noi soluții medicale",
-  link: "https://example.com/article4",
-  score: 90,
-  publishedAt: "2023-10-03T10:15:00Z"
-}, {
-  id: 5,
-  title: "Povești inspiraționale din lumea afacerilor",
-  link: "https://example.com/article5",
-  score: 78,
-  publishedAt: "2023-09-30T14:20:00Z"
-}, {
-  id: 6,
-  title: "Previziuni pentru piața imobiliară din 2024",
-  link: "https://example.com/article6",
-  score: 85,
-  publishedAt: "2023-10-04T09:00:00Z"
-}, {
-  id: 7,
-  title: "Sfaturi pentru economisirea energiei în gospodărie",
-  link: "https://example.com/article7",
-  score: 72,
-  publishedAt: "2023-09-29T18:10:00Z"
-}, {
-  id: 8,
-  title: "Top destinații de vacanță pentru aventurieri",
-  link: "https://example.com/article8",
-  score: 88,
-  publishedAt: "2023-10-05T11:30:00Z"
-}, {
-  id: 9,
-  title: "Recenzii: Cele mai bune gadgeturi ale momentului",
-  link: "https://example.com/article9",
-  score: 80,
-  publishedAt: "2023-09-27T13:45:00Z"
-}, {
-  id: 10,
-  title: "Bucătăria tradițională: Rețete autentice românești",
-  link: "https://example.com/article10",
-  score: 76,
-  publishedAt: "2023-10-06T15:25:00Z"
-}];
 
 // Updated helper to format the published date
+
 const formatDate = publishedAt => {
   const date = new Date(publishedAt);
   return date.toLocaleDateString('ro-RO', {
@@ -232,10 +272,11 @@ const SidebarPanel = () => {
   // Use the new useEntityProp hook instead of useSelect/useDispatch
   const [meta, setMeta] = (0,_wordpress_core_data__WEBPACK_IMPORTED_MODULE_3__.useEntityProp)('postType', 'post', 'meta');
 
+  // Get the post content using useSelect
+  const postContent = (0,_wordpress_data__WEBPACK_IMPORTED_MODULE_5__.useSelect)(select => select('core/editor').getEditedPostAttribute('content'));
+
   // Debug logs
-  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {
-    console.log("Current meta state:", meta);
-  }, [meta]);
+  (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useEffect)(() => {}, [meta]);
 
   // Parse the selected articles from the string in meta
   const selectedArticles = (() => {
@@ -250,7 +291,61 @@ const SidebarPanel = () => {
 
   // Local state for article list and fetching state
   const [fetching, setFetching] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(false);
-  const [articles, setArticles] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(defaultArticles);
+  const [articles, setArticles] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(selectedArticles);
+
+  // State for start date selection
+  const [startYear, setStartYear] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('2015');
+  const [startMonth, setStartMonth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('01');
+
+  // Options for year selection (adjust as needed)
+  const yearOptions = Array.from({
+    length: new Date().getFullYear() - 2007
+  }, (_, i) => {
+    const year = 2008 + i;
+    return {
+      label: year.toString(),
+      value: year.toString()
+    };
+  }).reverse();
+
+  // Options for month selection
+  const monthOptions = [{
+    label: 'Ianuarie',
+    value: '01'
+  }, {
+    label: 'Februarie',
+    value: '02'
+  }, {
+    label: 'Martie',
+    value: '03'
+  }, {
+    label: 'Aprilie',
+    value: '04'
+  }, {
+    label: 'Mai',
+    value: '05'
+  }, {
+    label: 'Iunie',
+    value: '06'
+  }, {
+    label: 'Iulie',
+    value: '07'
+  }, {
+    label: 'August',
+    value: '08'
+  }, {
+    label: 'Septembrie',
+    value: '09'
+  }, {
+    label: 'Octombrie',
+    value: '10'
+  }, {
+    label: 'Noiembrie',
+    value: '11'
+  }, {
+    label: 'Decembrie',
+    value: '12'
+  }];
 
   // Update the toggle
   const toggleRelatedEnabled = value => {
@@ -260,10 +355,19 @@ const SidebarPanel = () => {
     });
   };
 
-  // Update the article selection
-  const toggleArticle = id => {
-    const newSelection = selectedArticles.includes(id) ? selectedArticles.filter(articleId => articleId !== id) : [...selectedArticles, id];
-    console.log("Setting new selection:", newSelection);
+  // Update the article selection - store complete article object
+  const toggleArticle = article => {
+    let newSelection;
+
+    // Check if this article is already selected by comparing IDs
+    const isSelected = selectedArticles.some(item => item.ID === article.ID);
+    if (isSelected) {
+      // Remove the article from selection
+      newSelection = selectedArticles.filter(item => item.ID !== article.ID);
+    } else {
+      // Add the complete article object to selection
+      newSelection = [...selectedArticles, article];
+    }
     setMeta({
       ...meta,
       zdg_related_articles: JSON.stringify(newSelection)
@@ -271,58 +375,247 @@ const SidebarPanel = () => {
   };
   const fetchSimilarArticles = () => {
     setFetching(true);
-    console.log("Se obțin articole similare...");
-    // Simulate API call delay and response update
-    setTimeout(() => {
-      // In real implementation, update articles via API response.
+    // Extract text content from HTML
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = postContent || '';
+    const textContent = tempDiv.innerText.replace(/\s+/g, ' ').trim();
+
+    // Get the IDs of already selected articles
+    const selectedIds = selectedArticles.map(article => article.ID);
+    fetch("http://localhost:5000/api/recommend", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        query_text: textContent,
+        top_k: 10,
+        // Always fetch 10 articles
+        start_date: `${startYear}-${startMonth}-01`,
+        // Use selected start date
+        end_date: ""
+        // Removed exclude_ids since API doesn't support it
+      })
+    }).then(response => response.json()).then(data => {
+      // Extract articles from the first element of the response array
+      if (Array.isArray(data) && data.length >= 1) {
+        const newArticlesData = data[0];
+
+        // Filter out articles that are already selected
+        const filteredNewArticles = newArticlesData.filter(newArticle => !selectedIds.includes(newArticle.ID));
+
+        // Keep only enough new articles to have a total of 10 (including selected)
+        const maxNewArticlesToAdd = Math.max(10 - selectedArticles.length, 0);
+        const limitedNewArticles = filteredNewArticles.slice(0, maxNewArticlesToAdd);
+
+        // Set articles to be the combination of selected and new filtered articles
+        setArticles([...selectedArticles, ...limitedNewArticles]);
+      } else {
+        console.error("Unexpected API response format:", data);
+      }
+    }).catch(error => {
+      console.error("Error fetching similar articles:", error);
+    }).finally(() => {
       setFetching(false);
-      // ...existing code may update articles state...
-    }, 1000);
+    });
   };
-  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_1__.PluginDocumentSettingPanel, {
+
+  // State for manual article link input
+  const [manualArticleLink, setManualArticleLink] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('');
+  const handleAddManualArticle = () => {
+    if (manualArticleLink) {
+      // Extract post name from the link (example: https://www.example.com/post-name/ -> post-name)
+      const postName = manualArticleLink.split('/').filter(Boolean).pop();
+      // Make an API request to a custom endpoint to fetch article data by post name
+      fetch(`${zdgApi.baseUrl}zdg-related-articles/v1/article-by-name?post_name=${postName}`, {
+        method: 'GET',
+        headers: {
+          'X-WP-Nonce': zdgApi.nonce
+        }
+      }).then(response => response.json()).then(data => {
+        if (data && data.ID) {
+          // Add the fetched article to selected articles
+          toggleArticle(data);
+          // Also add the article to the local articles state if not already included
+          setArticles(prevArticles => {
+            if (prevArticles.some(article => article.ID === data.ID)) {
+              return prevArticles;
+            }
+            return [...prevArticles, data];
+          });
+          // Clear the input field
+          setManualArticleLink('');
+        } else {
+          alert('Articolul nu a fost găsit.');
+        }
+      }).catch(error => {
+        console.error("Error fetching article by post name:", error);
+        alert('Eroare la căutarea articolului.');
+      });
+    }
+  };
+  return /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)(_wordpress_editor__WEBPACK_IMPORTED_MODULE_1__.PluginDocumentSettingPanel, {
     name: "zdg-related-panel",
     title: "Articole similare",
-    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
+    children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.ToggleControl, {
       label: "Activeaz\u0103 articole similare",
       checked: relatedEnabled,
       onChange: toggleRelatedEnabled
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-      isSecondary: true,
-      onClick: fetchSimilarArticles,
-      disabled: fetching,
-      children: fetching ? "Se obține..." : "Obține articole similare"
-    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("div", {
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
       style: {
-        marginTop: '20px'
+        marginTop: '10px'
       },
-      children: articles.map(article => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+        htmlFor: "manual-article-link",
+        style: {
+          display: 'block',
+          marginBottom: '5px'
+        },
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("strong", {
+          children: "Adaug\u0103 un articol manual (Link)"
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+        style: {
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          width: '100%'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+          style: {
+            flexGrow: '1'
+          },
+          children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.TextControl, {
+            id: "manual-article-link",
+            placeholder: "https://www.zdg.com/articol",
+            type: "url",
+            value: manualArticleLink,
+            onChange: newLink => setManualArticleLink(newLink),
+            style: {
+              width: '100%'
+            }
+          })
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+          isSecondary: true,
+          onClick: handleAddManualArticle,
+          style: {
+            paddingBottom: '12px',
+            marginLeft: '5px',
+            marginBottom: '8px',
+            width: '32px',
+            height: '32px',
+            fontSize: '30px',
+            lineHeight: '32px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          },
+          children: "+"
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+      style: {
+        marginTop: '5px'
+      },
+      children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("label", {
+        style: {
+          display: 'block',
+          marginBottom: '5px'
+        },
+        children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("strong", {
+          children: "Caut\u0103 \xEEncep\xE2nd cu:"
+        })
+      }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+        style: {
+          width: 'fit-content'
+        },
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
+          style: {
+            display: 'flex',
+            alignItems: 'center',
+            gap: '5px',
+            width: 'fit-content'
+          },
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+            value: startYear,
+            options: yearOptions,
+            onChange: newYear => setStartYear(newYear),
+            style: {
+              textAlign: 'center'
+            }
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.SelectControl, {
+            value: startMonth,
+            options: monthOptions,
+            onChange: newMonth => setStartMonth(newMonth),
+            style: {
+              textAlign: 'center'
+            }
+          })]
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+          isSecondary: true,
+          onClick: fetchSimilarArticles,
+          disabled: fetching,
+          style: {
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center'
+          },
+          children: fetching ? "Se obține..." : "Obține articole similare"
+        })]
+      })]
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("hr", {
+      style: {
+        marginTop: '10px',
+        marginBottom: '10px'
+      }
+    }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("div", {
+      style: {
+        marginTop: '10px'
+      },
+      children: articles.map(article => /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
         style: {
           marginBottom: '10px'
         },
-        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
-          label: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)("strong", {
+        children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.CheckboxControl, {
+          label: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("strong", {
             children: article.title
           }),
-          checked: selectedArticles.includes(article.id),
-          onChange: () => toggleArticle(article.id)
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
-          isSmall: true,
-          onClick: () => window.open(article.link, '_blank'),
-          children: "Deschide"
-        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_5__.jsxs)("div", {
+          checked: selectedArticles.some(item => item.ID === article.ID),
+          onChange: () => toggleArticle(article)
+        }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("div", {
           style: {
+            display: 'flex',
+            alignItems: 'center',
+            // marginLeft: '26px', 
             fontSize: '12px',
             color: '#555'
           },
-          children: ["Similitudine: ", article.score, " | Publicat: ", formatDate(article.publishedAt)]
+          children: [/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsxs)("span", {
+            children: ["Similitudine: ", Math.round(article.score * 100), "% | Publicat: ", formatDate(article.date)]
+          }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
+            isSmall: true,
+            onClick: () => window.open(article.url, '_blank'),
+            variant: "link",
+            style: {
+              padding: '0'
+            },
+            children: /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_icons__WEBPACK_IMPORTED_MODULE_7__["default"], {
+              icon: _wordpress_icons__WEBPACK_IMPORTED_MODULE_8__["default"]
+            })
+          })]
         })]
-      }, article.id))
+      }, article.ID))
     })]
   });
 };
-(0,_wordpress_plugins__WEBPACK_IMPORTED_MODULE_0__.registerPlugin)('zdg-related-plugin', {
-  render: SidebarPanel
-});
+
+// registerPlugin('zdg-related-plugin', { render: SidebarPanel });
+if (!window.zdgPluginRegistered) {
+  (0,_wordpress_plugins__WEBPACK_IMPORTED_MODULE_0__.registerPlugin)("zdg-related-plugin", {
+    render: SidebarPanel
+  });
+  window.zdgPluginRegistered = true;
+}
 })();
 
 /******/ })()
