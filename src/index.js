@@ -1,10 +1,10 @@
 import { registerPlugin } from '@wordpress/plugins';
 import { PluginDocumentSettingPanel } from '@wordpress/editor';
-import { CheckboxControl, Button, ToggleControl, SelectControl, TextControl } from '@wordpress/components';
+import { CheckboxControl, Button, ToggleControl, SelectControl, TextControl, IconButton, PanelBody, TextareaControl } from '@wordpress/components';
 import { useEntityProp } from '@wordpress/core-data';
 import { useState, useEffect } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
-import { Icon, external } from '@wordpress/icons';
+import { Icon, external, settings } from '@wordpress/icons';
 
 // Updated helper to format the published date
 const formatDate = publishedAt => {
@@ -41,8 +41,19 @@ const SidebarPanel = () => {
     const [articles, setArticles] = useState(selectedArticles);
 
     // State for start date selection
-    const [startYear, setStartYear] = useState('2015');
+    const [startYear, setStartYear] = useState('2023');
     const [startMonth, setStartMonth] = useState('01');
+
+    // State for end date selection (default to current date)
+    const currentYear = new Date().getFullYear().toString();
+    const currentMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
+    const [endYear, setEndYear] = useState(currentYear);
+    const [endMonth, setEndMonth] = useState(currentMonth);
+
+    // State for advanced options visibility and keywords
+    const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
+    const [mandatoryKeywords, setMandatoryKeywords] = useState('');
+    const [optionalKeywords, setOptionalKeywords] = useState('');
 
     // Options for year selection (adjust as needed)
     const yearOptions = Array.from({ length: (new Date()).getFullYear() - 2007 }, (_, i) => {
@@ -95,8 +106,17 @@ const SidebarPanel = () => {
         });
     };
 
+    // State for API error message
+    const [apiError, setApiError] = useState('');
+
+    // Helper function to parse keywords string into array
+    const parseKeywords = (keywordsString) => {
+        return keywordsString.split(',').map(kw => kw.trim()).filter(kw => kw !== '');
+    };
+
     const fetchSimilarArticles = () => {
         setFetching(true);
+        setApiError(''); // Clear any previous error
         // Extract text content from HTML
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = postContent || '';
@@ -113,15 +133,23 @@ const SidebarPanel = () => {
             body: JSON.stringify({
                 query_text: textContent,
                 top_k: 10,  // Always fetch 10 articles
-                start_date: `${startYear}-${startMonth}-01`, // Use selected start date
-                end_date: ""
-                // Removed exclude_ids since API doesn't support it
+                end_date: `${endYear}-${endMonth}-${new Date(parseInt(endYear), parseInt(endMonth), 0).getDate().toString().padStart(2, '0')}`, // Use last day of selected month
+                mandatory_kw: parseKeywords(mandatoryKeywords), // Add mandatory keywords
+                optional_kw: parseKeywords(optionalKeywords) // Add optional keywords
             })
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                // If the response status is not OK, throw an error
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             // Extract articles from the first element of the response array
             if (Array.isArray(data) && data.length >= 1) {
+                console.log("Fetched articles:", data);
+                
                 const newArticlesData = data[0];
                 
                 // Filter out articles that are already selected
@@ -137,10 +165,12 @@ const SidebarPanel = () => {
                 setArticles([...selectedArticles, ...limitedNewArticles]);
             } else {
                 console.error("Unexpected API response format:", data);
+                setApiError("Nu s-au găsit articole. Verificați perioada selectată.");
             }
         })
         .catch(error => {
             console.error("Error fetching similar articles:", error);
+            setApiError(`Eroare la obținerea articolelor similare: ${error.message}`);
         })
         .finally(() => {
             setFetching(false);
@@ -149,9 +179,12 @@ const SidebarPanel = () => {
 
     // State for manual article link input
     const [manualArticleLink, setManualArticleLink] = useState('');
+    // State for manual article error message
+    const [manualArticleError, setManualArticleError] = useState('');
 
     const handleAddManualArticle = () => {
         if (manualArticleLink) {
+            setManualArticleError(''); // Clear any previous error
             // Extract post name from the link (example: https://www.example.com/post-name/ -> post-name)
             const postName = manualArticleLink.split('/').filter(Boolean).pop();
             // Make an API request to a custom endpoint to fetch article data by post name
@@ -161,35 +194,36 @@ const SidebarPanel = () => {
                     'X-WP-Nonce': zdgApi.nonce
                 }
             })
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.ID) {
-                        // Add the fetched article to selected articles
-                        toggleArticle(data);
-                        // Also add the article to the local articles state if not already included
-                        setArticles(prevArticles => {
-                            if (prevArticles.some(article => article.ID === data.ID)) {
-                                return prevArticles;
-                            }
-                            return [...prevArticles, data];
-                        });
-                        // Clear the input field
-                        setManualArticleLink('');
-                    } else {
-                        alert('Articolul nu a fost găsit.');
-                    }
-                })
-                .catch(error => {
-                    console.error("Error fetching article by post name:", error);
-                    alert('Eroare la căutarea articolului.');
-                });
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.ID) {
+                    // Add the fetched article to selected articles
+                    toggleArticle(data);
+                    // Also add the article to the local articles state if not already included
+                    setArticles(prevArticles => {
+                        if (prevArticles.some(article => article.ID === data.ID)) {
+                            return prevArticles;
+                        }
+                        return [...prevArticles, data];
+                    });
+                    // Clear the input field
+                    setManualArticleLink('');
+                } else {
+                    setManualArticleError('Articolul nu a fost găsit.');
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching article by post name:", error);
+                setManualArticleError(`Eroare la căutarea articolului:${error.message}`);
+            });
         }
     };
 
     return (
         <PluginDocumentSettingPanel name="zdg-related-panel" title="Articole similare">
             <ToggleControl
-                label="Activează articole similare"
+                label="Afișare articole recomandate"
+                __nextHasNoMarginBottom={true}
                 checked={ relatedEnabled }
                 onChange={ toggleRelatedEnabled }
             />
@@ -206,6 +240,7 @@ const SidebarPanel = () => {
                 }}>
                     <div style={{ flexGrow: '1' }}>
                         <TextControl
+                            __nextHasNoMarginBottom={true}
                             id="manual-article-link"
                             placeholder="https://www.zdg.com/articol"
                             type="url"
@@ -222,10 +257,10 @@ const SidebarPanel = () => {
                         style={{
                             paddingBottom: '12px',
                             marginLeft: '5px',
-                            marginBottom: '8px',
+                            // marginBottom: '8px',
                             width: '32px',
                             height: '32px',
-                            fontSize: '30px',
+                            fontSize: '28px',
                             lineHeight: '32px',
                             display: 'flex',
                             alignItems: 'center',
@@ -235,52 +270,149 @@ const SidebarPanel = () => {
                         +
                     </Button>
                 </div>
+                {manualArticleError && (
+                    <p style={{ color: 'red'}}>
+                        {manualArticleError}
+                    </p>
+                )}
             </div>
-            {/* Year and Month selection */}
-            <div style={{ marginTop: '5px' }}>
-                <label style={{ display: 'block', marginBottom: '5px' }}>
-                    <strong>Caută începând cu:</strong>
-                </label>
-                <div style={{ width: 'fit-content'}}>
-                    <div style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '5px',
-                        width: 'fit-content',
-                    }}>
+            {/* Advanced Options Section */}
+            <label htmlFor="zdg-fetch-similar-articles" style={{ display: 'block', marginTop: '10px', }}>
+                    <strong>Căutare automată de articole</strong>
+            </label>
+            <div 
+                id="zdg-advanced-options"
+                className={`zdg-advanced-options-container ${showAdvancedOptions ? 'expanded' : ''}`}
+                style={{
+                    maxHeight: showAdvancedOptions ? '500px' : '0px',
+                    opacity: showAdvancedOptions ? 1 : 0,
+                    overflow: 'hidden',
+                    transition: 'all 0.5s ease',
+                    visibility: showAdvancedOptions ? 'visible' : 'hidden',
+                }}
+            >
+                <div style={{  
+                    backgroundColor: '#f0f0f0', // Slightly darker background
+                    padding: '10px',          // Add padding
+                    border: '1px solid #ddd', // Optional border for clarity
+                    borderRadius: '2px'       // Optional rounded corners
+                }}>
+                    {/* Start Date Selection */}
+                    <label style={{ display: 'block', marginBottom: '5px' }}>
+                        <strong>Caută începând cu:</strong>
+                    </label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '10px' }}>
                         <SelectControl
+                            __nextHasNoMarginBottom={true}
                             value={ startYear }
                             options={ yearOptions }
                             onChange={ (newYear) => setStartYear(newYear) }
                             style={{ textAlign: 'center' }}
                         />
                         <SelectControl
+                            __nextHasNoMarginBottom={true}
                             value={ startMonth }
                             options={ monthOptions }
                             onChange={ (newMonth) => setStartMonth(newMonth) }
                             style={{ textAlign: 'center' }}
                         />
                     </div>
-                    <Button 
-                        isSecondary 
-                        onClick={ fetchSimilarArticles } 
-                        disabled={ fetching } 
-                        style={{
-                            width: '100%', 
-                            alignItems: 'center',
-                            justifyContent: 'center' 
-                        }}>
-                        { fetching ? "Se obține..." : "Obține articole similare" }
-                    </Button>
+                    {/* End Date Selection */}
+                    <label style={{ display: 'block', marginBottom: '5px' }}>
+                        <strong>Caută până la:</strong>
+                    </label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginBottom: '10px' }}>
+                        <SelectControl
+                            __nextHasNoMarginBottom={true}
+                            value={ endYear }
+                            options={ yearOptions }
+                            onChange={ (newYear) => setEndYear(newYear) }
+                            style={{ textAlign: 'center' }}
+                        />
+                        <SelectControl
+                            __nextHasNoMarginBottom={true}
+                            value={ endMonth }
+                            options={ monthOptions }
+                            onChange={ (newMonth) => setEndMonth(newMonth) }
+                            style={{ textAlign: 'center' }}
+                        />
+                    </div>
+                    {/* Keywords Input */}
+                    <label style={{ display: 'block', marginBottom: '5px' }}>
+                        <strong>Cuvinte cheie obligatorii (separate prin virgulă)</strong>
+                    </label>
+                    <TextareaControl
+                        __nextHasNoMarginBottom={true}
+                        value={ mandatoryKeywords }
+                        onChange={ (value) => setMandatoryKeywords(value) }
+                        rows={1}
+                        style={{ 
+                            marginBottom: '10px',
+                            padding: '6px 8px',
+                            resize: 'none',
+                            overflow: 'hidden',
+                            maxHeight: '200px',
+                         }}
+                        onInput={(e) => {
+                            e.target.style.height = 'auto';
+                            e.target.style.height = `${e.target.scrollHeight}px`;
+                          }}
+                    />
+                    <label style={{ display: 'block', marginBottom: '5px' }}>
+                        <strong>Cuvinte cheie opționale (separate prin virgulă)</strong>
+                    </label>
+                    <TextareaControl
+                        __nextHasNoMarginBottom={true}
+                        value={ optionalKeywords }
+                        onChange={ (value) => setOptionalKeywords(value)}
+                        rows={1}
+                        style={{ 
+                            padding: '6px 8px',
+                            resize: 'none',
+                            overflow: 'hidden',
+                            maxHeight: '200px',
+                         }}
+                        onInput={(e) => {
+                            e.target.style.height = 'auto';
+                            e.target.style.height = `${e.target.scrollHeight}px`;
+                          }}
+                    />
                 </div>
             </div>
             
+            {/* Fetch Button and Advanced Options Toggle */}
+            <div style={{ display: 'flex', alignItems: 'center', marginTop: '10px', gap: '5px', maxHeight: '32px'}}>
+                <Button 
+                    id='zdg-fetch-similar-articles'
+                    variant='secondary'
+                    onClick={ fetchSimilarArticles } 
+                    disabled={ fetching } 
+                    style={{ flexGrow: 1, justifyContent: 'center', maxHeight: '32px' }}
+                >
+                    { fetching ? "Se obține..." : "Obține articole similare" }
+                </Button>
+                <Button 
+                    variant='secondary'
+                    id='zdg-advanced-toggle'
+                    icon={settings} 
+                    label="Opțiuni avansate" 
+                    onClick={() => setShowAdvancedOptions(!showAdvancedOptions)} 
+                    isPressed={showAdvancedOptions}
+                    style={{maxHeight: '32px', maxWidth: '32px', minWidth: '32px'}}
+                />
+            </div>
+            {apiError && (
+                <p style={{ color: 'red', marginTop: '5px' }}>
+                    {apiError}
+                </p>
+            )}
             
             <hr style={{marginTop:'10px', marginBottom:'10px'}}></hr>
             <div style={{ marginTop: '10px' }}>
                 { articles.map( article => (
                     <div key={ article.ID } style={{ marginBottom: '10px' }}>
                         <CheckboxControl
+                            __nextHasNoMarginBottom={true}
                             label={ <strong>{ article.title }</strong> }
                             checked={ selectedArticles.some(item => item.ID === article.ID) }
                             onChange={ () => toggleArticle(article) }
@@ -288,12 +420,12 @@ const SidebarPanel = () => {
                         <div style={{ 
                             display: 'flex', 
                             alignItems: 'center', 
-                            // marginLeft: '26px', 
                             fontSize: '12px', 
                             color: '#555' 
                             }}>
+                               
                             <span>
-                                Similitudine: { Math.round(article.score * 100) }% | Publicat: { formatDate( article.date ) }
+                                Publicat: { formatDate( article.date ) }
                             </span>
                             <Button 
                                 isSmall 
@@ -304,7 +436,7 @@ const SidebarPanel = () => {
                                 }}
                             >
                                 <Icon icon={external} />
-                            </Button>
+                            </Button> 
                         </div>
                     </div>
                 )) }
