@@ -5,7 +5,6 @@
  */
 ?>
 <article class="list-item --featured-small">
-    <!-- Image removed intentionally -->
     <div class="list-item__text">
         <h4 class="list-item__title">
             <a href="<?php the_permalink(); ?>" class="list-item__link-inner">

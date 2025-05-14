@@ -8,6 +8,17 @@
 
 defined('ABSPATH') || exit;
 
+// Add settings link on plugin page
+function zdg_add_settings_link($links) {
+    $settings_link = '<a href="options-general.php?page=zdg-related-articles">' . __('Settings') . '</a>';
+    array_unshift($links, $settings_link);
+    return $links;
+}
+
+// Get the base name of the plugin file for the filter hook
+$plugin_base_name = plugin_basename(__FILE__);
+add_filter("plugin_action_links_$plugin_base_name", 'zdg_add_settings_link');
+
 // Enqueue editor scripts
 function zdg_enqueue_sidebar_script() {
     wp_enqueue_script(
@@ -21,11 +32,14 @@ function zdg_enqueue_sidebar_script() {
 add_action('enqueue_block_editor_assets', 'zdg_enqueue_sidebar_script');
 
 function zdg_enqueue_scripts() {
-    wp_enqueue_script('zdg-related-articles', plugin_dir_url(__FILE__) . 'build/index.js', array('wp-api-fetch', 'wp-element'), '1.0', true);
+    wp_enqueue_script('zdg-related-articles', plugin_dir_url(__FILE__) . 'build/index.js', array('wp-api-fetch', 'wp-element'), '1.0', true);    // Get the API URL from settings (no default)
+    $api_url = get_option('zdg_api_url', '');
 
     wp_localize_script('zdg-related-articles', 'zdgApi', array(
         'baseUrl' => get_rest_url(),
-        'nonce'   => wp_create_nonce('wp_rest')
+        'nonce'   => wp_create_nonce('wp_rest'),
+        'apiUrl'  => $api_url, // Add the API URL
+        'apiConfigured' => !empty($api_url) // Flag to indicate if API is configured
     ));
 }
 add_action('admin_enqueue_scripts', 'zdg_enqueue_scripts');
@@ -53,18 +67,18 @@ function zdg_enqueue_related_articles_styles() {
         filemtime(plugin_dir_path(__FILE__) . 'assets/css/related-articles.css')
     );
     
-    // Add inline script to fix any styling issues after the theme has loaded
-    wp_add_inline_script('jquery', '
-        jQuery(document).ready(function($) {
-            // Ensure list items have consistent styling
-            $(".zdg-related-articles .list-item").addClass("--featured-small");
+    // // Add inline script to fix any styling issues after the theme has loaded
+    // wp_add_inline_script('jquery', '
+    //     jQuery(document).ready(function($) {
+    //         // Ensure list items have consistent styling
+    //         $(".zdg-related-articles .list-item").addClass("--featured-small");
             
-            // Initialize any scripts that the theme might have for list items
-            if (typeof initListItems === "function") {
-                initListItems($(".zdg-related-articles .list-item"));
-            }
-        });
-    ');
+    //         // Initialize any scripts that the theme might have for list items
+    //         if (typeof initListItems === "function") {
+    //             initListItems($(".zdg-related-articles .list-item"));
+    //         }
+    //     });
+    // ');
 }
 add_action('wp_enqueue_scripts', 'zdg_enqueue_related_articles_styles', 999);
 
@@ -107,6 +121,15 @@ add_action('rest_api_init', function () {
             return current_user_can('edit_posts');
         }
     ));
+
+    // Add endpoint for testing OpenSearch connection
+    register_rest_route('zdg-related-articles/v1', '/test-opensearch', array(
+        'methods' => 'GET',
+        'callback' => 'zdg_test_opensearch_connection',
+        'permission_callback' => function () {
+            return current_user_can('manage_options');
+        }
+    ));
 });
 
 function zdg_get_article_by_post_name($request) {
@@ -141,8 +164,52 @@ function zdg_get_article_by_post_name($request) {
     );
 }
 
-require_once plugin_dir_path(__FILE__) . 'includes/publish-hooks.php';
+// Function to test the OpenSearch connection
+function zdg_test_opensearch_connection() {
+    $api_url = get_option('zdg_api_url', '');
+    
+    if (empty($api_url)) {
+        return new WP_Error('api_not_configured', 'API URL is not configured', array('status' => 400));
+    }
+    
+    $test_url = trailingslashit($api_url) . 'test_opensearch';
+    $response = wp_remote_get($test_url, array('timeout' => 15));
+    
+    if (is_wp_error($response)) {
+        return new WP_Error(
+            'opensearch_connection_failed', 
+            $response->get_error_message(), 
+            array('status' => 500)
+        );
+    }
+    
+    $response_code = wp_remote_retrieve_response_code($response);
+    $body = wp_remote_retrieve_body($response);
+    
+    if ($response_code === 200) {
+        return array(
+            'success' => true,
+            'message' => 'OpenSearch connection successful',
+            'details' => $body
+        );
+    } else {
+        return new WP_Error(
+            'opensearch_test_failed',
+            'OpenSearch test failed with code ' . $response_code,
+            array(
+                'status' => $response_code,
+                'response' => $body
+            )
+        );
+    }
+}
 
-// Remove display functionalities from this file and include them from a separate file.
+// Define plugin file constant for use in hooks
+define('ZDG_RELATED_ARTICLES_FILE', __FILE__);
+
+// Include required files
+require_once plugin_dir_path(__FILE__) . 'includes/publish-hooks.php';
+require_once plugin_dir_path(__FILE__) . 'includes/settings-page.php';
 require_once plugin_dir_path(__FILE__) . 'includes/display-functions.php';
+require_once plugin_dir_path(__FILE__) . 'includes/retry-handler.php';
 

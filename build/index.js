@@ -328,7 +328,7 @@ const SidebarPanel = () => {
   const [articles, setArticles] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)(selectedArticles);
 
   // State for start date selection
-  const [startYear, setStartYear] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('2023');
+  const [startYear, setStartYear] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)((new Date().getFullYear() - 2).toString());
   const [startMonth, setStartMonth] = (0,_wordpress_element__WEBPACK_IMPORTED_MODULE_4__.useState)('01');
 
   // State for end date selection (default to current date)
@@ -429,6 +429,14 @@ const SidebarPanel = () => {
   const fetchSimilarArticles = () => {
     setFetching(true);
     setApiError(''); // Clear any previous error
+
+    // Check if API URL is configured
+    if (!zdgApi.apiConfigured) {
+      setApiError('API URL nu este configurat. Accesați Setări > ZDG Related Articles pentru a configura API URL.');
+      setFetching(false);
+      return;
+    }
+
     // Extract text content from HTML
     const tempDiv = document.createElement('div');
     tempDiv.innerHTML = postContent || '';
@@ -436,7 +444,11 @@ const SidebarPanel = () => {
 
     // Get the IDs of already selected articles
     const selectedIds = selectedArticles.map(article => article.ID);
-    fetch("http://localhost:5000/api/recommend", {
+
+    // Use the API URL from WordPress settings
+    const apiUrl = zdgApi.apiUrl;
+    const endpoint = `${apiUrl}recommend`;
+    fetch(endpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -458,10 +470,39 @@ const SidebarPanel = () => {
       }
       return response.json();
     }).then(data => {
+      // Log the full response for debugging
+      console.log("Fetched response:", data);
+
+      // Check for API error status in data[1]
+      if (Array.isArray(data) && data.length >= 2 && data[1] !== 200) {
+        // Handle non-200 status code from backend API
+        console.error(`API error status: ${data[1]}`);
+
+        // Check if there's an error message in data[0]
+        if (data[0] && data[0].message) {
+          throw new Error(data[0].message);
+        } else {
+          throw new Error(`Eroare server: ${data[1]}`);
+        }
+      }
+
       // Extract articles from the first element of the response array
       if (Array.isArray(data) && data.length >= 1) {
-        console.log("Fetched articles:", data);
         const newArticlesData = data[0];
+
+        // Check if we got back an object with a message property instead of articles
+        if (newArticlesData && newArticlesData.message) {
+          console.error("API message:", newArticlesData.message);
+          setApiError(`Mesaj de la server: ${newArticlesData.message}`);
+          return;
+        }
+
+        // Check if we have an array of articles
+        if (!Array.isArray(newArticlesData) || newArticlesData.length === 0) {
+          console.error("No articles returned:", data);
+          setApiError("Nu s-au găsit articole. Verificați perioada selectată și/sau cuvintele cheie.");
+          return;
+        }
 
         // Filter out articles that are already selected
         const filteredNewArticles = newArticlesData.filter(newArticle => !selectedIds.includes(newArticle.ID));
@@ -474,7 +515,7 @@ const SidebarPanel = () => {
         setArticles([...selectedArticles, ...limitedNewArticles]);
       } else {
         console.error("Unexpected API response format:", data);
-        setApiError("Nu s-au găsit articole. Verificați perioada selectată.");
+        setApiError("Nu s-au găsit articole. Verificați perioada selectată și/sau cuvintele cheie.");
       }
     }).catch(error => {
       console.error("Error fetching similar articles:", error);
@@ -741,12 +782,13 @@ const SidebarPanel = () => {
         id: "zdg-fetch-similar-articles",
         variant: "secondary",
         onClick: fetchSimilarArticles,
-        disabled: fetching,
+        disabled: fetching || !zdgApi.apiConfigured,
         style: {
           flexGrow: 1,
           justifyContent: 'center',
           maxHeight: '32px'
         },
+        title: !zdgApi.apiConfigured ? "API URL nu este configurat" : "",
         children: fetching ? "Se obține..." : "Obține articole similare"
       }), /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)(_wordpress_components__WEBPACK_IMPORTED_MODULE_2__.Button, {
         variant: "secondary",
@@ -761,7 +803,13 @@ const SidebarPanel = () => {
           minWidth: '32px'
         }
       })]
-    }), apiError && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
+    }), !zdgApi.apiConfigured && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
+      style: {
+        color: 'orange',
+        marginTop: '5px'
+      },
+      children: "C\u0103utarea automat\u0103 nu este disponibil\u0103."
+    }), apiError && zdgApi.apiConfigured && /*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_6__.jsx)("p", {
       style: {
         color: 'red',
         marginTop: '5px'
